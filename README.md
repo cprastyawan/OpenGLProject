@@ -1,4 +1,4 @@
-# OpenGLProject
+# OpenGL Project
 Project yang dibuat menggunakan OpenGL termasuk mata kuliah Workshop Grafika Komputer 
 
 Library:
