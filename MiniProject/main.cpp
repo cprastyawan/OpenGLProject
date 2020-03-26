@@ -273,4 +273,3 @@ const char* printColor(Color c) {
 	else if (c == White) return "Putih";
 	else return "Warna tidak terdaftar";
 }
-

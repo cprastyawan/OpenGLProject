@@ -6,6 +6,7 @@
 #include <user/Shader.h>
 
 #include "Rectangle.h"
+#include "Triangle.h"
 
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
@@ -21,6 +22,7 @@ private:
 public:
 	Renderer();
 	void AddRectangle(Rectangle r, Shader& shader, glm::mat4 MVP);
+	void AddTriangle(Triangle t, Shader& shader, glm::mat4 MVP);
 	void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 	void Clear() const;
 };

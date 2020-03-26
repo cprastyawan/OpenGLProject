@@ -44,3 +44,18 @@ void Renderer::AddRectangle(Rectangle r, Shader& shader, glm::mat4 MVP) {
 		shader.SetUniformMat4f("u_Scale", r.Scale);
 	}
 }
+
+void Renderer::AddTriangle(Triangle t, Shader& shader, glm::mat4 MVP) {
+	shader.Bind();
+	MVP = MVP * t.Position;
+	if (t.hide) {
+		shader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 0.0f);
+		shader.SetUniformMat4f("u_MVP", MVP);
+		shader.SetUniformMat4f("u_Scale", t.ZeroScale);
+	}
+	else {
+		shader.SetUniform4f("u_Color", t.color.red, t.color.green, t.color.blue, t.color.alpha);
+		shader.SetUniformMat4f("u_MVP", MVP);
+		shader.SetUniformMat4f("u_Scale", t.Scale);
+	}
+}

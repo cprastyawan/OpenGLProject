@@ -6,11 +6,16 @@
 #include <iostream>
 #include <string>
 #include <math.h>
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "Renderer.h"
-#include "Shader.h"
+#include <user/VertexBuffer.h>
+#include <user/IndexBuffer.h>
+#include <user/VertexArray.h>
+#include <user/VertexBufferLayout.h>
+#include <user/Renderer.h>
+#include <user/Shader.h>
+#include <user/Triangle.h>
+
+#define WIDTH 640
+#define HEIGHT 480
 
 static bool kondisi = false;
 
@@ -23,7 +28,6 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 int main() {
 	GLFWwindow *window;
-
 
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_VERSION_MINOR, 3);
@@ -52,35 +56,15 @@ int main() {
 		printf("%d\n", a);
 		return -1;
 	}
-	glm::vec3 pos[4] = {
-		glm::vec3(-0.2f, 0.2f, 0.00f),
-		glm::vec3(-0.2f, -0.2f, 0.00f),
-		glm::vec3(0.2f, -0.2f, 0.00f),
-		glm::vec3(0.2f, 0.2f, 0.00f)
-	};
 
-	unsigned int indices[6] = {
-		0, 1, 2,
-		2, 3, 0
-	};
+	Triangle tri(Point{ WIDTH/2, HEIGHT/2 }, Color{ 1.0f,0.0f,0.0f }, 60.0f);
 
-	glm::vec3 pos2[4] = {
-		glm::vec3(-0.3f, 0.3f, 0.00f),
-		glm::vec3(-0.3f, -0.3f, 0.00f),
-		glm::vec3(0.3f, -0.3f, 0.00f),
-		glm::vec3(0.3f, 0.3f, 0.00f)
-	};
-
-	unsigned int indices2[6] = {
-		0, 1, 2,
-		2, 3, 0
-	};
+	glm::mat4 Projection = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
+	glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::mat4 MVP = Projection * View;
 
 	VertexArray va;
-	VertexBuffer vb(pos, 4 * sizeof(glm::vec3));
-
-	VertexArray va2;
-	VertexBuffer vb2(pos2, 4 * sizeof(glm::vec3));
+	VertexBuffer vb(tri.pos, tri.sizeTriangle);
 
 	VertexBufferLayout layout;
 	layout.Push<float>(3);
@@ -89,47 +73,27 @@ int main() {
 	VertexBufferLayout layout2;
 	layout2.Push<float>(3);
 
-	IndexBuffer ib(indices, 6);
-	IndexBuffer ib2(indices2, 6);
+	IndexBuffer ib(tri.indices, tri.indicescount);
 
-	glm::mat4 trans;
-	trans = glm::scale(glm::mat4(), glm::vec3(0.5f, 0.5f, 0.5f));
-
-	Shader shader("res/shaders/Basic.shader");
+	Shader shader("../res/shaders/Basic.shader");
 	shader.Bind();
-	shader.SetUniformMat4f("u_Transform", trans);
 
 	va.Unbind();
-	va2.Unbind();
 	vb.Unbind();
-	vb2.Unbind();
 	ib.Unbind();
-	ib2.Unbind();
+
 	shader.Unbind();
-	float r = 0.0f;
-	float increment = 0.05f;
+	Renderer renderer;
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.Bind();
-
-		shader.SetUniform4f("u_Color", r, 0.4f, 0.5f, 1.0f);
-
 		va.Bind();
 		ib.Bind();
-		va2.Bind();
-		ib2.Bind();
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-		if (r > 1.0f)
-			increment = -0.05f;
-		else if (r < 0.0f)
-			increment = 0.05f;
-		r += increment;
-
+		
+		renderer.AddTriangle(tri, shader, MVP);
+		renderer.Draw(va, ib, shader);
 
 		glfwSwapBuffers(window);
 

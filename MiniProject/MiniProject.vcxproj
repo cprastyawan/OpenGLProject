@@ -128,6 +128,7 @@
     <ClCompile Include="..\include\user\Rectangle.cpp" />
     <ClCompile Include="..\include\user\Renderer.cpp" />
     <ClCompile Include="..\include\user\Shader.cpp" />
+    <ClCompile Include="..\include\user\Triangle.cpp" />
     <ClCompile Include="..\include\user\VertexArray.cpp" />
     <ClCompile Include="..\include\user\VertexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="..\include\user\Rectangle.h" />
     <ClInclude Include="..\include\user\Renderer.h" />
     <ClInclude Include="..\include\user\Shader.h" />
+    <ClInclude Include="..\include\user\Triangle.h" />
     <ClInclude Include="..\include\user\VertexArray.h" />
     <ClInclude Include="..\include\user\VertexBuffer.h" />
     <ClInclude Include="..\include\user\VertexBufferLayout.h" />
