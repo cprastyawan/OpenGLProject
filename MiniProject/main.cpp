@@ -14,9 +14,13 @@
 #include <vector>
 #include <user/VertexBufferLayout.h>
 #include <user/Rectangle.h>
+#include <EasyBMP/EasyBMP.h>
+#include <user/text2D.hpp>
 
 #define WIDTH 640
 #define HEIGHT 480
+
+std::vector<Point> loadbmp(const char* filename);
 
 Color Red = { 1.0f, 0.0f, 0.0f, 1.0f };
 Color Green = { 0.0f, 1.0f, 0.0f, 1.0f };
@@ -40,17 +44,17 @@ static unsigned int score;
 static unsigned int level;
 static unsigned int countTrueRectangle;
 
-Color generateRandomColor();
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-std::vector<Rectangle> generateRectangle(int count, Color colorChoose);
-void clearRectangle(std::vector<Rectangle> &rect);
-void start(std::vector<Rectangle> &rect, Color &, unsigned int &level);
-void levelUp(std::vector <Rectangle> &rect, unsigned int &level, Color &buffer, unsigned int &score);
-void scoreUp(unsigned int &score);
-void gameOver(unsigned int &score, std::vector<Rectangle> &rect, Color &buffer);
-void restartGame(unsigned int &score, std::vector<Rectangle>& rect, Color &buffer);
-unsigned int checkTrueRectangle(Color c, std::vector<Rectangle> rect);
-const char* printColor(Color c);
+Color generateRandomColor();	//Fungsi untuk menghasilkan warna secara acak
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods); //Fungsi callback mouse
+std::vector<Rectangle> generateRectangle(int count, Color colorChoose); //Fungsi untuk menghasilkan persegi
+void clearRectangle(std::vector<Rectangle> &rect); //Fungsi untuk menghapus semua persegi
+void start(std::vector<Rectangle> &rect, Color &, unsigned int &level); //fungsi untuk memulai permainan
+void levelUp(std::vector <Rectangle> &rect, unsigned int &level, Color &buffer, unsigned int &score); //fungsi untuk naik level
+void scoreUp(unsigned int &score); //Fungsi untuk skor
+void gameOver(unsigned int &score, std::vector<Rectangle> &rect, Color &buffer); //Fungsi untuk kalah
+void restartGame(unsigned int &score, std::vector<Rectangle>& rect, Color &buffer);	//Fungsi untuk mengulangi permainan
+unsigned int checkTrueRectangle(Color c, std::vector<Rectangle> rect);	//Fungsi untuk mengecek apakah persegi masih ada yang benar atau tidak
+const char* printColor(Color c); //Fungsi untuk mencetak nama dari warna
 
 int main() {
 	srand((unsigned)time(NULL));
@@ -65,7 +69,6 @@ int main() {
 	if (!window) errorMessage("glewInit() error!\n");
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(5);
 
 	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
@@ -75,51 +78,52 @@ int main() {
 	glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	glm::mat4 MVP = Projection * View;
 
-	VertexArray va;
-	VertexBuffer vb(initRect.pos, initRect.sizeRect);
-	VertexBufferLayout layout;
-
-	layout.Push<float>(3);
-	va.AddBuffer(vb, layout);
-
-	IndexBuffer ib(initRect.indices, initRect.indicescount);
-
-	Shader shader("res/shaders/Basic.shader");
-
-	shader.Bind();
-
-	va.Unbind();
-
-	vb.Unbind();
-
-	ib.Unbind();
-
-	shader.Unbind();
-
-	Renderer renderer;
-
 	printf("Selamat datang dalam permainan tebak warna!!!\n");
 	printf("Tekan Y untuk memulai permainan...\n");
 	printf("Tekan Esc untuk keluar...\n");
 	bool next = false;
 
-	
+	std::vector<Point> bmp = loadbmp("no1.bmp");
+	Rectangle anim(Point{ 0.0f,0.0f }, Color{ 0.0f,0.0f,0.0f,0.0f }, 2.0f);
+	glfwSwapInterval(3);
+
+	//char *text = (char*)"Test123";
+	initText2D("../res/font/Holstein.DDS");
+
 	while (!next) {
+		VertexArray va;
+		VertexBuffer vb(initRect.pos, initRect.sizeRect);
+		VertexBufferLayout layout;
+
+		layout.Push<float>(3);
+		va.AddBuffer(vb, layout);
+
+		IndexBuffer ib(initRect.indices, initRect.indicescount);
+
+		Shader shader("res/shaders/Basic.shader");
+
+		shader.Bind();
+
+		va.Unbind();
+
+		vb.Unbind();
+
+		ib.Unbind();
+
+		shader.Unbind();
+
+		Renderer renderer;
+
 		if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) next = true;
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) exit(1);
 
-		for (int i = 0; i < 100; i++) {
-			Rectangle anim1(Point{ WIDTH - 30.0f * i,HEIGHT - 30.0f * i }, generateRandomColor(), 30.0f);
-			renderer.AddRectangle(anim1, shader, MVP);
+		for (int i = 0; i < bmp.size(); i++) {
+			anim.color = generateRandomColor();
+			anim.Position = glm::translate(glm::mat4(), glm::vec3(2 * bmp.at(i).x, 2 * bmp.at(i).y, 0.0f));
+		/*	anim = Rectangle(bmp.at(i), generateRandomColor(), 1.0f);*/
+			renderer.AddRectangle(anim, shader, MVP);
 			renderer.Draw(va, ib, shader);
 		}
-
-		for (int i = 0; i < 100; i++) {
-			Rectangle anim1(Point{ WIDTH - 30.0f*i,30.0f + 30.0f * i }, generateRandomColor(), 30.0f);
-			renderer.AddRectangle(anim1, shader, MVP);
-			renderer.Draw(va, ib, shader);
-		}
-
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -128,8 +132,38 @@ int main() {
 	start(rect, selectedColor, level);
 
 	while (!glfwWindowShouldClose(window)) {
+
+		VertexArray va;
+		VertexBuffer vb(initRect.pos, initRect.sizeRect);
+		VertexBufferLayout layout;
+
+		layout.Push<float>(3);
+		va.AddBuffer(vb, layout);
+
+		IndexBuffer ib(initRect.indices, initRect.indicescount);
+
+		Shader shader("res/shaders/Basic.shader");
+
+		shader.Bind();
+
+		va.Unbind();
+
+		vb.Unbind();
+
+		ib.Unbind();
+
+		shader.Unbind();
+
+		Renderer renderer;
+
+
 		renderer.Clear();
-	
+		shader.Bind();
+		va.Bind();
+
+		vb.Bind();
+
+		ib.Bind();
 		renderer.AddRectangle(initRect, shader, MVP);
 		renderer.Draw(va, ib, shader);
 
@@ -138,9 +172,13 @@ int main() {
 			renderer.Draw(va, ib, shader);
 		}
 
+		std::string text = "Score: " + std::to_string(score) + "   Warna: " + printColor(selectedColor);
+		printText2D(text, 0, HEIGHT + 85, 30);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	cleanupText2D();
 }
 
 inline void errorMessage(std::string text) {
@@ -183,15 +221,17 @@ std::vector<Rectangle> generateRectangle(int count, Color colorChoose) {
 		else c = generateRandomColor();
 
 		Point point;
-		if (i < count / 2) {
-			point.x = (float)randomGenerator(150 / count, WIDTH - 150 / count);
-			point.y = (float)randomGenerator(150 / count, HEIGHT - 150 / count);
-		}
-		else {
-			point.x = (float)randomGenerator(0, WIDTH - 10);
-			point.y = (float)randomGenerator(0, HEIGHT - 10);
-		}
-		temp.push_back(Rectangle(point, c, 150 / count));
+		//if (i < count / 2) {
+		//	point.x = (float)randomGenerator(150 / count, WIDTH - 150 / count);
+		//	point.y = (float)randomGenerator(150 / count, HEIGHT - 150 / count);
+		//}
+		//else {
+		//	point.x = (float)randomGenerator(0, WIDTH - 10);
+		//	point.y = (float)randomGenerator(0, HEIGHT - 10);
+		//}
+		point.x = (float)randomGenerator(0, WIDTH);
+		point.y = (float)randomGenerator(0, HEIGHT);
+		temp.push_back(Rectangle(point, c, 200 / count));
 	}
 	return temp;
 }
@@ -272,4 +312,16 @@ const char* printColor(Color c) {
 	else if (c == Pink) return "Merah Muda";
 	else if (c == White) return "Putih";
 	else return "Warna tidak terdaftar";
+}
+
+std::vector<Point> loadbmp(const char* filename) {
+	BMP bmp;
+	bmp.ReadFromFile(filename);
+	std::vector<Point> buf;
+	for (int i = 0; i < bmp.TellHeight(); i++) {
+		for (int j = 0; j < bmp.TellWidth(); j++) {
+			if (bmp(j, i)->Red == 0) buf.push_back(Point{ (float)j, (float)i });
+		}
+	}
+	return buf;
 }

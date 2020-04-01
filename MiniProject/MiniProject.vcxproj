@@ -76,11 +76,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>../lib/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -89,7 +89,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -99,13 +104,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../lib/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -116,29 +121,42 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\include\EasyBMP\EasyBMP.cpp" />
     <ClCompile Include="..\include\user\IndexBuffer.cpp" />
     <ClCompile Include="..\include\user\Object.cpp" />
     <ClCompile Include="..\include\user\Rectangle.cpp" />
     <ClCompile Include="..\include\user\Renderer.cpp" />
     <ClCompile Include="..\include\user\Shader.cpp" />
+    <ClCompile Include="..\include\user\text2D.cpp" />
+    <ClCompile Include="..\include\user\texture.cpp" />
     <ClCompile Include="..\include\user\Triangle.cpp" />
     <ClCompile Include="..\include\user\VertexArray.cpp" />
     <ClCompile Include="..\include\user\VertexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\EasyBMP\EasyBMP.h" />
+    <ClInclude Include="..\include\EasyBMP\EasyBMP_BMP.h" />
+    <ClInclude Include="..\include\EasyBMP\EasyBMP_DataStructures.h" />
+    <ClInclude Include="..\include\EasyBMP\EasyBMP_VariousBMPutilities.h" />
+    <ClInclude Include="..\include\user\cahyo.h" />
     <ClInclude Include="..\include\user\IndexBuffer.h" />
     <ClInclude Include="..\include\user\Object.h" />
     <ClInclude Include="..\include\user\Rectangle.h" />
     <ClInclude Include="..\include\user\Renderer.h" />
     <ClInclude Include="..\include\user\Shader.h" />
+    <ClInclude Include="..\include\user\text2D.hpp" />
+    <ClInclude Include="..\include\user\texture.hpp" />
     <ClInclude Include="..\include\user\Triangle.h" />
     <ClInclude Include="..\include\user\VertexArray.h" />
     <ClInclude Include="..\include\user\VertexBuffer.h" />

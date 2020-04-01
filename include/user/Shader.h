@@ -9,6 +9,7 @@ struct ShaderProgramSource {
 	std::string FragmentSource;
 };
 
+GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
 
 class Shader {
 private:
@@ -30,6 +31,8 @@ public:
 	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 	static ShaderProgramSource ParseShader(const std::string &filepath);
+
+	unsigned int getRendererID();
 
 private:
 	unsigned int GetUniformLocation(const std::string& name);

@@ -153,6 +153,7 @@
     <ClCompile Include="..\include\user\VertexArray.cpp" />
     <ClCompile Include="..\include\user\VertexBuffer.cpp" />
     <ClCompile Include="Assignment123.cpp" />
+    <ClCompile Include="tes1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
